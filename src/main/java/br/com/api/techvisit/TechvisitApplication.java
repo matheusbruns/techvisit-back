@@ -1,13 +1,13 @@
-package java.br.com.techvisit.api;
+package br.com.api.techvisit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TechvisitApiApplication {
+public class TechvisitApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TechvisitApiApplication.class, args);
+		SpringApplication.run(TechvisitApplication.class, args);
 	}
 
 }

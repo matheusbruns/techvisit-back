@@ -16,6 +16,8 @@ public class OrganizationBean {
 	@NotNull
 	private String name;
 
+	private LocalDate creationDate;
+
 	private LocalDate expirationDate;
 
 }

@@ -12,6 +12,8 @@ public class OrganizationFactory {
 		bean.setId(model.getId());
 		bean.setExternalCode(model.getExternalCode());
 		bean.setName(model.getName());
+		bean.setCreationDate(model.getCreationDate());
+		bean.setExpirationDate(model.getExpirationDate());
 		return bean;
 	}
 
@@ -24,6 +26,7 @@ public class OrganizationFactory {
 		model.setId(bean.getId());
 		model.setExternalCode(bean.getExternalCode());
 		model.setName(bean.getName());
+		model.setCreationDate(bean.getCreationDate());
 		model.setExpirationDate(bean.getExpirationDate());
 		return model;
 	}

@@ -19,6 +19,9 @@ public class OrganizationBean {
 	private String name;
 
 	@JsonIgnore
+	private LocalDate creationDate;
+
+	@JsonIgnore
 	private LocalDate expirationDate;
 
 }

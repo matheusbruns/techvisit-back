@@ -60,7 +60,7 @@ public class AuthenticationController {
 			return ResponseEntity.badRequest().build();
 		}
 
-		OrganizationModel organization = this.organizationService.getById(data.organizationId()).orElseThrow(() -> new BadRequestException());
+		OrganizationModel organization = this.organizationService.getOrganizationById(data.organizationId()).orElseThrow(() -> new BadRequestException());
 		String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
 		UserModel newUser = new UserModel(data.login(), encryptedPassword, data.role(), organization, LocalDate.now(), true);
 

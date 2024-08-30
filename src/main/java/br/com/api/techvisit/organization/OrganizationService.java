@@ -41,11 +41,12 @@ public class OrganizationService {
 
 	@Transactional
 	public void delete(List<Long> ids) {
-		// TODO: implementar tratativa para quando houver usuários dessa empresa
+		// TODO: implementar tratativa para quando houver usuários e clientes dessa
+		// empresa
 		this.organizationRepository.deleteAllById(ids);
 	}
 
-	public Optional<OrganizationModel> getById(Long organizationId) {
+	public Optional<OrganizationModel> getOrganizationById(Long organizationId) {
 		return this.organizationRepository.findById(organizationId);
 	}
 

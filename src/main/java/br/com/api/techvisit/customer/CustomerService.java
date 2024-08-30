@@ -29,7 +29,7 @@ public class CustomerService {
 
 	public CustomerBean save(CustomerBean customerBean) {
 		
-		Optional<OrganizationModel> organization = this.organizationService.getOrganization(customerBean.getOrganization().getId());
+		Optional<OrganizationModel> organization = this.organizationService.getOrganizationById(customerBean.getOrganization().getId());
 		
 		CustomerModel model = new CustomerFactory().build(customerBean);
 		

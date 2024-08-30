@@ -2,6 +2,8 @@ package br.com.api.techvisit.organization.bean;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -16,8 +18,10 @@ public class OrganizationBean {
 	@NotNull
 	private String name;
 
+	@JsonIgnore
 	private LocalDate creationDate;
 
+	@JsonIgnore
 	private LocalDate expirationDate;
 
 }

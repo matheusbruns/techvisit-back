@@ -46,8 +46,8 @@ public class OrganizationService {
 		this.organizationRepository.deleteAllById(ids);
 	}
 
-	public Optional<OrganizationModel> getOrganization(Long id) {
-		return this.organizationRepository.findById(id);
+	public Optional<OrganizationModel> getOrganizationById(Long organizationId) {
+		return this.organizationRepository.findById(organizationId);
 	}
 
 }

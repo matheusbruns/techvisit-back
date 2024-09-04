@@ -1,5 +1,6 @@
 package br.com.api.techvisit.organization.factory;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import br.com.api.techvisit.organization.bean.OrganizationBean;
@@ -27,6 +28,16 @@ public class OrganizationFactory {
 		model.setExternalCode(bean.getExternalCode());
 		model.setName(bean.getName());
 		model.setCreationDate(bean.getCreationDate());
+		model.setExpirationDate(bean.getExpirationDate());
+		return model;
+	}
+
+	public OrganizationModel buildNew(OrganizationBean bean) {
+		OrganizationModel model = new OrganizationModel();
+		model.setId(bean.getId());
+		model.setExternalCode(bean.getExternalCode());
+		model.setName(bean.getName());
+		model.setCreationDate(LocalDate.now());
 		model.setExpirationDate(bean.getExpirationDate());
 		return model;
 	}

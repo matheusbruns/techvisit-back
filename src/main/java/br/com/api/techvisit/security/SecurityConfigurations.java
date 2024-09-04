@@ -24,7 +24,6 @@ public class SecurityConfigurations {
 	
 	@Autowired
 	SecurityFilter securityFilter;
-	
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -32,7 +31,7 @@ public class SecurityConfigurations {
 				.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new CorsConfiguration();
-                    corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:3000")); // Altere para o URL do seu front-end
+                    corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
                     corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(Collections.singletonList("*"));
                     corsConfig.setAllowCredentials(true);
@@ -41,7 +40,7 @@ public class SecurityConfigurations {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-						.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+						.requestMatchers(HttpMethod.POST, "/auth/register").permitAll() // arrancar fora isso
 						.requestMatchers(HttpMethod.POST, "/organization").hasRole("ADMIN")
 						.anyRequest().authenticated()
 				)

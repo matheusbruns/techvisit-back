@@ -26,7 +26,7 @@ public class OrganizationService {
 	@Transactional
 	public OrganizationBean save(OrganizationBean organizationBean) {
 		OrganizationFactory factory = new OrganizationFactory();
-		return factory.build(this.organizationRepository.save(factory.build(organizationBean)));
+		return factory.build(this.organizationRepository.save(factory.buildNew(organizationBean)));
 	}
 
 	@Transactional

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.techvisit.authentication.definition.LoginResponseDTO;
 import br.com.api.techvisit.organization.OrganizationService;
+import br.com.api.techvisit.organization.definition.OrganizationModel;
 import br.com.api.techvisit.organization.factory.OrganizationFactory;
-import br.com.api.techvisit.organization.model.OrganizationModel;
 import br.com.api.techvisit.security.TokenService;
 import br.com.api.techvisit.user.UserRepository;
 import br.com.api.techvisit.user.definition.AuthenticationDTO;

@@ -1,16 +1,15 @@
 package br.com.api.techvisit.customer;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.api.techvisit.customer.bean.CustomerBean;
+import br.com.api.techvisit.customer.definition.CustomerDTO;
 import br.com.api.techvisit.customer.factory.CustomerFactory;
-import br.com.api.techvisit.customer.model.CustomerModel;
 import br.com.api.techvisit.organization.OrganizationService;
-import br.com.api.techvisit.organization.model.OrganizationModel;
+import br.com.api.techvisit.organization.definition.OrganizationModel;
+import br.com.api.techvisit.organization.exception.OrganizationNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -23,18 +22,18 @@ public class CustomerService {
 	@Autowired
 	private OrganizationService organizationService;
 
-	public List<CustomerBean> getAllByOrganization(Long organizationId) {
+	public List<CustomerDTO> getAllByOrganization(Long organizationId) {
 		return new CustomerFactory().build(this.customerRepository.findAllByOrganizationId(organizationId));
 	}
 
-	public CustomerBean save(CustomerBean customerBean) {
-		
-		Optional<OrganizationModel> organization = this.organizationService.getOrganizationById(customerBean.getOrganization().getId());
-		
-		CustomerModel model = new CustomerFactory().build(customerBean);
-		
-		
-		return null;
+	public CustomerDTO save(CustomerDTO dto) {
+		OrganizationModel organization = this.organizationService.getOrganizationById(dto.getOrganization().getId()).orElseThrow(() -> new OrganizationNotFoundException("Organization not found."));
+		dto.setOrganization(organization);
+		return new CustomerFactory().build(this.customerRepository.save(new CustomerFactory().build(dto)));
+	}
+
+	public void delete(List<Long> ids) {
+		this.customerRepository.deleteAllByIdInBatch(ids);
 	}
 
 }

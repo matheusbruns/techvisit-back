@@ -1,4 +1,4 @@
-package br.com.api.techvisit.organization.bean;
+package br.com.api.techvisit.organization.definition;
 
 import java.time.LocalDate;
 
@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class OrganizationBean {
+public class OrganizationDTO {
 
 	private Long id;
 

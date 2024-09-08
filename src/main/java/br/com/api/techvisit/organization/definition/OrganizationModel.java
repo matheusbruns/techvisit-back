@@ -1,4 +1,4 @@
-package br.com.api.techvisit.organization.model;
+package br.com.api.techvisit.organization.definition;
 
 import java.time.LocalDate;
 

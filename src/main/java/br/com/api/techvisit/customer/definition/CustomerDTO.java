@@ -1,10 +1,10 @@
-package br.com.api.techvisit.customer.bean;
+package br.com.api.techvisit.customer.definition;
 
-import br.com.api.techvisit.organization.model.OrganizationModel;
+import br.com.api.techvisit.organization.definition.OrganizationModel;
 import lombok.Data;
 
 @Data
-public class CustomerBean {
+public class CustomerDTO {
 
 	private Long id;
 

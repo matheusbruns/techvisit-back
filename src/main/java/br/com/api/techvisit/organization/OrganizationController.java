@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.api.techvisit.organization.bean.OrganizationBean;
+import br.com.api.techvisit.organization.definition.OrganizationDTO;
 
 @RestController
 @RequestMapping("/organization")
@@ -24,19 +24,19 @@ public class OrganizationController {
 	private OrganizationService organizationService;
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<OrganizationBean> getAll() {
+	public List<OrganizationDTO> getAll() {
 		return this.organizationService.getAll();
 	}
 
 	@PostMapping()
 	@ResponseStatus(HttpStatus.CREATED)
-	public OrganizationBean save(@RequestBody OrganizationBean organizationBean) {
+	public OrganizationDTO save(@RequestBody OrganizationDTO organizationBean) {
 		return this.organizationService.save(organizationBean);
 	}
 
 	@PutMapping
 	@ResponseStatus(HttpStatus.OK)
-	public OrganizationBean update(@RequestBody OrganizationBean organizationBean) {
+	public OrganizationDTO update(@RequestBody OrganizationDTO organizationBean) {
 		return this.organizationService.update(organizationBean);
 	}
 

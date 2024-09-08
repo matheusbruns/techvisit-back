@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.api.techvisit.organization.bean.OrganizationBean;
+import br.com.api.techvisit.organization.definition.OrganizationDTO;
+import br.com.api.techvisit.organization.definition.OrganizationModel;
 import br.com.api.techvisit.organization.exception.OrganizationNotFoundException;
 import br.com.api.techvisit.organization.factory.OrganizationFactory;
-import br.com.api.techvisit.organization.model.OrganizationModel;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -19,24 +19,24 @@ public class OrganizationService {
 	@Autowired
 	private OrganizationRepository organizationRepository;
 
-	public List<OrganizationBean> getAll() {
+	public List<OrganizationDTO> getAll() {
 		return new OrganizationFactory().build(this.organizationRepository.findAll());
 	}
 
 	@Transactional
-	public OrganizationBean save(OrganizationBean organizationBean) {
+	public OrganizationDTO save(OrganizationDTO organizationBean) {
 		OrganizationFactory factory = new OrganizationFactory();
 		return factory.build(this.organizationRepository.save(factory.buildNew(organizationBean)));
 	}
 
 	@Transactional
-	public OrganizationBean update(OrganizationBean organizationBean) {
+	public OrganizationDTO update(OrganizationDTO organizationDTO) {
 		OrganizationFactory factory = new OrganizationFactory();
-		if (this.organizationRepository.existsById(organizationBean.getId())) {
+		if (this.organizationRepository.existsById(organizationDTO.getId())) {
 			throw new OrganizationNotFoundException("Organization not found.");
 		}
 
-		return factory.build(this.organizationRepository.save(factory.build(organizationBean)));
+		return factory.build(this.organizationRepository.save(factory.build(organizationDTO)));
 	}
 
 	@Transactional

@@ -1,7 +1,7 @@
-package br.com.api.techvisit.customer.model;
+package br.com.api.techvisit.customer.definition;
 
 import br.com.api.techvisit.generic.GenericModel;
-import br.com.api.techvisit.organization.model.OrganizationModel;
+import br.com.api.techvisit.organization.definition.OrganizationModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

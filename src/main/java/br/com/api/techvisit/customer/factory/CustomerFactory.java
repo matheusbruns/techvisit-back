@@ -2,13 +2,13 @@ package br.com.api.techvisit.customer.factory;
 
 import java.util.List;
 
-import br.com.api.techvisit.customer.bean.CustomerBean;
-import br.com.api.techvisit.customer.model.CustomerModel;
+import br.com.api.techvisit.customer.definition.CustomerDTO;
+import br.com.api.techvisit.customer.definition.CustomerModel;
 
 public class CustomerFactory {
 
-	public CustomerBean build(CustomerModel model) {
-		CustomerBean bean = new CustomerBean();
+	public CustomerDTO build(CustomerModel model) {
+		CustomerDTO bean = new CustomerDTO();
 		bean.setId(model.getId());
 		bean.setFirstName(model.getFirstName());
 		bean.setLastName(model.getLastName());
@@ -22,11 +22,11 @@ public class CustomerFactory {
 		return bean;
 	}
 
-	public List<CustomerBean> build(List<CustomerModel> organizations) {
+	public List<CustomerDTO> build(List<CustomerModel> organizations) {
 		return organizations.stream().map(this::build).toList();
 	}
 
-	public CustomerModel build(CustomerBean bean) {
+	public CustomerModel build(CustomerDTO bean) {
 		CustomerModel model = new CustomerModel();
 		model.setId(bean.getId());
 		model.setFirstName(bean.getFirstName());

@@ -32,18 +32,11 @@ public class OrganizationService {
 	@Transactional
 	public OrganizationDTO update(OrganizationDTO organizationDTO) {
 		OrganizationFactory factory = new OrganizationFactory();
-		if (this.organizationRepository.existsById(organizationDTO.getId())) {
+		if (!this.organizationRepository.existsById(organizationDTO.getId())) {
 			throw new OrganizationNotFoundException("Organization not found.");
 		}
 
 		return factory.build(this.organizationRepository.save(factory.build(organizationDTO)));
-	}
-
-	@Transactional
-	public void delete(List<Long> ids) {
-		// TODO: implementar tratativa para quando houver usuários e clientes dessa
-		// empresa
-		this.organizationRepository.deleteAllById(ids);
 	}
 
 	public Optional<OrganizationModel> getOrganizationById(Long organizationId) {

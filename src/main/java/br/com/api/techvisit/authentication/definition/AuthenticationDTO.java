@@ -1,4 +1,4 @@
-package br.com.api.techvisit.user.definition;
+package br.com.api.techvisit.authentication.definition;
 
 public record AuthenticationDTO(String login, String password) {
 

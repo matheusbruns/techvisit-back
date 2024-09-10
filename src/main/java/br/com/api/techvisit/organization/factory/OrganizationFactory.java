@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.com.api.techvisit.organization.definition.OrganizationDTO;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
+import br.com.api.techvisit.organization.definition.OrganizationResponseDTO;
 
 public class OrganizationFactory {
 
@@ -49,6 +50,14 @@ public class OrganizationFactory {
 		dto.setName(name);
 		dto.setCreationDate(creationDate);
 		dto.setExpirationDate(expirationDate);
+		return dto;
+	}
+
+	public OrganizationResponseDTO buildResponse(OrganizationModel model) {
+		OrganizationResponseDTO dto = new OrganizationResponseDTO();
+		dto.setId(model.getId());
+		dto.setExternalCode(model.getExternalCode());
+		dto.setName(model.getName());
 		return dto;
 	}
 

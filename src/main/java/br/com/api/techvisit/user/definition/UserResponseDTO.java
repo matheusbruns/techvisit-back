@@ -1,7 +1,7 @@
 package br.com.api.techvisit.user.definition;
 
-import br.com.api.techvisit.organization.definition.OrganizationDTO;
+import br.com.api.techvisit.organization.definition.OrganizationResponseDTO;
 
-public record UserResponseDTO(String login, UserRole role, OrganizationDTO organization) {
+public record UserResponseDTO(String login, UserRole role, OrganizationResponseDTO organization) {
 
 }

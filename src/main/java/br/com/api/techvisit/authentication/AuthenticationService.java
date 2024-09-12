@@ -1,7 +1,6 @@
 package br.com.api.techvisit.authentication;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import br.com.api.techvisit.authentication.definition.LoginResponseDTO;
 import br.com.api.techvisit.authentication.definition.RegisterDTO;
 import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
+import br.com.api.techvisit.organization.exception.OrganizationNotFoundException;
 import br.com.api.techvisit.organization.factory.OrganizationFactory;
 import br.com.api.techvisit.security.TokenService;
 import br.com.api.techvisit.user.UserRepository;
@@ -52,9 +52,9 @@ public class AuthenticationService implements UserDetailsService {
 		var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
 		var auth = this.authenticationManager.authenticate(usernamePassword);
 		var token = tokenService.generateToken((UserModel) auth.getPrincipal());
-		Optional<UserModel> user = this.userRepository.findUserByLogin(data.login());
+		UserModel user = this.userRepository.findUserByLogin(data.login()).orElseThrow(() -> new UsernameNotFoundException("User not found."));
 		
-		UserResponseDTO userInfos = new UserResponseDTO(user.get().getLogin(), user.get().getRole(),  new OrganizationFactory().buildResponse(user.get().getOrganization()));
+		UserResponseDTO userInfos = new UserResponseDTO(user.getLogin(), user.getRole(),  new OrganizationFactory().buildResponse(user.getOrganization()), user.isActive());
 		return new LoginResponseDTO(userInfos, token);
 	}
 
@@ -63,9 +63,9 @@ public class AuthenticationService implements UserDetailsService {
 			return ResponseEntity.badRequest().build();
 		}
 
-		OrganizationModel organization = this.organizationService.getOrganizationById(data.organizationId()).orElseThrow(() -> new BadRequestException());
+		OrganizationModel organization = this.organizationService.getOrganizationById(data.organization().getId()).orElseThrow(() -> new OrganizationNotFoundException("Organizatin not found."));
 		String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-		UserModel newUser = new UserModel(data.login(), encryptedPassword, data.role(), organization, LocalDate.now(), true);
+		UserModel newUser = new UserModel(data.login(), encryptedPassword, data.role(), organization, LocalDate.now(), data.active());
 
 		this.userRepository.save(newUser);
 		

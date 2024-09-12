@@ -49,8 +49,8 @@ public class UserModel extends GenericModel implements UserDetails {
 	@Column(name = "role")
 	private UserRole role;
 
-	@Column(name = "is_active")
-	private boolean isActive;
+	@Column(name = "active", nullable = false, columnDefinition = "boolean default false")
+	private boolean active;
 
 	public UserModel(String login, String password, UserRole role, OrganizationModel organization, LocalDate creationDate, boolean isActive) {
 		this.login = login;
@@ -58,7 +58,7 @@ public class UserModel extends GenericModel implements UserDetails {
 		this.role = role;
 		this.organization = organization;
 		this.creationDate = creationDate;
-		this.isActive = isActive;
+		this.active = isActive;
 	}
 
 	@Override

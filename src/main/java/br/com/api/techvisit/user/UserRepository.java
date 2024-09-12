@@ -11,9 +11,8 @@ import br.com.api.techvisit.user.model.UserModel;
 public interface UserRepository extends JpaRepository<UserModel, Long> {
 
 	Optional<UserDetails> findByLogin(String login);
-	
+
 	@Query("Select user from UserModel user where user.login = :login")
 	Optional<UserModel> findUserByLogin(String login);
 
-	
 }

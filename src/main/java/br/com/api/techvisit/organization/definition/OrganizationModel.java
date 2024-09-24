@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "organization")
+@Table(name = "organizations")
 @EqualsAndHashCode(callSuper = true)
 public class OrganizationModel extends GenericModel {
 

@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
-@Table(name = "customer", uniqueConstraints = { @UniqueConstraint(columnNames = { "cpf", "organization_id" }) })
+@Table(name = "customers", uniqueConstraints = { @UniqueConstraint(columnNames = { "cpf", "organization_id" }) })
 @EqualsAndHashCode(callSuper = true)
 public class CustomerModel extends GenericModel {
 

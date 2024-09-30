@@ -10,6 +10,7 @@ import br.com.api.techvisit.customer.factory.CustomerFactory;
 import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
 import br.com.api.techvisit.organization.exception.OrganizationNotFoundException;
+import br.com.api.techvisit.organization.factory.OrganizationFactory;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -28,7 +29,7 @@ public class CustomerService {
 
 	public CustomerDTO save(CustomerDTO dto) {
 		OrganizationModel organization = this.organizationService.getOrganizationById(dto.getOrganization().getId()).orElseThrow(() -> new OrganizationNotFoundException("Organization not found."));
-		dto.setOrganization(organization);
+		dto.setOrganization(new OrganizationFactory().build(organization));
 		return new CustomerFactory().build(this.customerRepository.save(new CustomerFactory().build(dto)));
 	}
 

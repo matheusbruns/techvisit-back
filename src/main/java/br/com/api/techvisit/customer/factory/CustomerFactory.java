@@ -4,40 +4,41 @@ import java.util.List;
 
 import br.com.api.techvisit.customer.definition.CustomerDTO;
 import br.com.api.techvisit.customer.definition.CustomerModel;
+import br.com.api.techvisit.organization.factory.OrganizationFactory;
 
 public class CustomerFactory {
 
 	public CustomerDTO build(CustomerModel model) {
-		CustomerDTO bean = new CustomerDTO();
-		bean.setId(model.getId());
-		bean.setFirstName(model.getFirstName());
-		bean.setLastName(model.getLastName());
-		bean.setCpf(model.getCpf());
-		bean.setPhoneNumber(model.getPhoneNumber());
-		bean.setStreet(model.getStreet());
-		bean.setNumber(model.getNumber());
-		bean.setComplement(model.getComplement());
-		bean.setCep(model.getCep());
-		bean.setOrganization(model.getOrganization());
-		return bean;
+		CustomerDTO dto = new CustomerDTO();
+		dto.setId(model.getId());
+		dto.setFirstName(model.getFirstName());
+		dto.setLastName(model.getLastName());
+		dto.setCpf(model.getCpf());
+		dto.setPhoneNumber(model.getPhoneNumber());
+		dto.setStreet(model.getStreet());
+		dto.setNumber(model.getNumber());
+		dto.setComplement(model.getComplement());
+		dto.setCep(model.getCep());
+		dto.setOrganization(new OrganizationFactory().build(model.getOrganization()));
+		return dto;
 	}
 
 	public List<CustomerDTO> build(List<CustomerModel> organizations) {
 		return organizations.stream().map(this::build).toList();
 	}
 
-	public CustomerModel build(CustomerDTO bean) {
+	public CustomerModel build(CustomerDTO dto) {
 		CustomerModel model = new CustomerModel();
-		model.setId(bean.getId());
-		model.setFirstName(bean.getFirstName());
-		model.setLastName(bean.getLastName());
-		model.setCpf(bean.getCpf());
-		model.setPhoneNumber(bean.getPhoneNumber());
-		model.setStreet(bean.getStreet());
-		model.setNumber(bean.getNumber());
-		model.setComplement(bean.getComplement());
-		model.setCep(bean.getCep());
-		model.setOrganization(bean.getOrganization());
+		model.setId(dto.getId());
+		model.setFirstName(dto.getFirstName());
+		model.setLastName(dto.getLastName());
+		model.setCpf(dto.getCpf());
+		model.setPhoneNumber(dto.getPhoneNumber());
+		model.setStreet(dto.getStreet());
+		model.setNumber(dto.getNumber());
+		model.setComplement(dto.getComplement());
+		model.setCep(dto.getCep());
+		model.setOrganization(new OrganizationFactory().build(dto.getOrganization()));
 		return model;
 	}
 

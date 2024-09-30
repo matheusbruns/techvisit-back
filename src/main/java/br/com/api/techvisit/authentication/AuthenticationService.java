@@ -1,7 +1,6 @@
 package br.com.api.techvisit.authentication;
 
 import java.time.LocalDate;
-
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

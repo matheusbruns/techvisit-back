@@ -1,6 +1,6 @@
 package br.com.api.techvisit.customer.definition;
 
-import br.com.api.techvisit.organization.definition.OrganizationModel;
+import br.com.api.techvisit.organization.definition.OrganizationDTO;
 import lombok.Data;
 
 @Data
@@ -24,6 +24,6 @@ public class CustomerDTO {
 
 	private String cep;
 
-	private OrganizationModel organization;
+	private OrganizationDTO organization;
 
 }

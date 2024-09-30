@@ -1,9 +1,10 @@
 package br.com.api.techvisit.technician.definition;
 
+import br.com.api.techvisit.organization.definition.OrganizationDTO;
 import lombok.Data;
 
 @Data
-public class TechnicianDTO {
+public class TechnicianSaveDTO {
 
 	private Long id;
 
@@ -17,6 +18,10 @@ public class TechnicianDTO {
 
 	private String phoneNumber;
 
-	private Boolean active;
+	private String password;
+	
+	private boolean active;
+
+	private OrganizationDTO organization;
 
 }

@@ -22,8 +22,8 @@ import br.com.api.techvisit.organization.exception.OrganizationNotFoundException
 import br.com.api.techvisit.organization.factory.OrganizationFactory;
 import br.com.api.techvisit.security.TokenService;
 import br.com.api.techvisit.user.UserRepository;
+import br.com.api.techvisit.user.definition.UserModel;
 import br.com.api.techvisit.user.definition.UserResponseDTO;
-import br.com.api.techvisit.user.model.UserModel;
 import jakarta.validation.Valid;
 
 @Service

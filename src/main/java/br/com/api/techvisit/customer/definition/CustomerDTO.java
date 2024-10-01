@@ -16,6 +16,12 @@ public class CustomerDTO {
 
 	private String phoneNumber;
 
+	private String state;
+
+	private String city;
+	
+	private String neighborhood;
+
 	private String street;
 
 	private String number;

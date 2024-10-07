@@ -1,7 +1,6 @@
 package br.com.api.techvisit.visitschedule.definition;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import br.com.api.techvisit.customer.definition.CustomerDTO;
 import br.com.api.techvisit.organization.definition.OrganizationDTO;
@@ -16,7 +15,7 @@ public class VisitScheduleDTO {
 	public String description;
 
 	public CustomerDTO customer;
-	
+
 	public TechnicianDTO technician;
 
 	public String phoneNumber;
@@ -37,13 +36,12 @@ public class VisitScheduleDTO {
 
 	public BigDecimal price;
 
-	public LocalDateTime startDate;
+	public String startDate;
 
-	public LocalDateTime endDate;
+	public String endDate;
 
 	public String comment;
-	
-	public OrganizationDTO organization;
 
+	public OrganizationDTO organization;
 
 }

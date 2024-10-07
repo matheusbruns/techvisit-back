@@ -29,6 +29,15 @@ public class CustomerModel extends GenericModel {
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
+	@Column(name = "state")
+	private String state;
+
+	@Column(name = "city")
+	private String city;
+
+	@Column(name = "neighborhood")
+	private String neighborhood;
+
 	@Column(name = "street")
 	private String street;
 

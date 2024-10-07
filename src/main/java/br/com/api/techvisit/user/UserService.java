@@ -12,11 +12,11 @@ import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
 import br.com.api.techvisit.organization.exception.OrganizationNotFoundException;
 import br.com.api.techvisit.user.definition.UserDTO;
+import br.com.api.techvisit.user.definition.UserModel;
 import br.com.api.techvisit.user.definition.UserRole;
 import br.com.api.techvisit.user.exception.LoginAlreadyExistsException;
 import br.com.api.techvisit.user.exception.UserNotFoundException;
 import br.com.api.techvisit.user.factory.UserFactory;
-import br.com.api.techvisit.user.model.UserModel;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 

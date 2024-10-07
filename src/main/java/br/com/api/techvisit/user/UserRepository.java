@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.api.techvisit.user.model.UserModel;
+import br.com.api.techvisit.user.definition.UserModel;
 
 public interface UserRepository extends JpaRepository<UserModel, Long> {
 

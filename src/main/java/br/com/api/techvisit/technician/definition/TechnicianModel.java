@@ -2,7 +2,7 @@ package br.com.api.techvisit.technician.definition;
 
 import br.com.api.techvisit.generic.GenericModel;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
-import br.com.api.techvisit.user.model.UserModel;
+import br.com.api.techvisit.user.definition.UserModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

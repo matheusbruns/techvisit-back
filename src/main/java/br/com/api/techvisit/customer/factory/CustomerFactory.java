@@ -15,6 +15,9 @@ public class CustomerFactory {
 		dto.setLastName(model.getLastName());
 		dto.setCpf(model.getCpf());
 		dto.setPhoneNumber(model.getPhoneNumber());
+		dto.setState(model.getState());
+		dto.setCity(model.getCity());
+		dto.setNeighborhood(model.getNeighborhood());
 		dto.setStreet(model.getStreet());
 		dto.setNumber(model.getNumber());
 		dto.setComplement(model.getComplement());
@@ -23,8 +26,8 @@ public class CustomerFactory {
 		return dto;
 	}
 
-	public List<CustomerDTO> build(List<CustomerModel> organizations) {
-		return organizations.stream().map(this::build).toList();
+	public List<CustomerDTO> build(List<CustomerModel> customers) {
+		return customers.stream().map(this::build).toList();
 	}
 
 	public CustomerModel build(CustomerDTO dto) {
@@ -34,6 +37,9 @@ public class CustomerFactory {
 		model.setLastName(dto.getLastName());
 		model.setCpf(dto.getCpf());
 		model.setPhoneNumber(dto.getPhoneNumber());
+		model.setState(dto.getState());
+		model.setCity(dto.getCity());
+		model.setNeighborhood(dto.getNeighborhood());
 		model.setStreet(dto.getStreet());
 		model.setNumber(dto.getNumber());
 		model.setComplement(dto.getComplement());

@@ -1,11 +1,13 @@
 package br.com.api.techvisit.customer;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.techvisit.customer.definition.CustomerDTO;
+import br.com.api.techvisit.customer.definition.CustomerModel;
 import br.com.api.techvisit.customer.factory.CustomerFactory;
 import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
@@ -35,6 +37,10 @@ public class CustomerService {
 
 	public void delete(List<Long> ids) {
 		this.customerRepository.deleteAllByIdInBatch(ids);
+	}
+
+	public Optional<CustomerModel> getCustomerById(Long customerId) {
+		return this.customerRepository.findById(customerId);
 	}
 
 }

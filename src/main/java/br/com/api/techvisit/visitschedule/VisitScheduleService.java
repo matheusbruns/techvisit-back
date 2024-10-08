@@ -2,7 +2,6 @@ package br.com.api.techvisit.visitschedule;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.techvisit.customer.CustomerService;
@@ -20,17 +19,22 @@ import br.com.api.techvisit.visitschedule.factory.VisitScheduleFactory;
 @Service
 public class VisitScheduleService {
 
-	@Autowired
-	private VisitScheduleRepository visitScheduleRepository;
+	private final VisitScheduleRepository visitScheduleRepository;
 
-	@Autowired
-	private CustomerService customerService;
+	private final CustomerService customerService;
 
-	@Autowired
-	private TechnicianService technicianService;
+	private final TechnicianService technicianService;
 
-	@Autowired
-	private OrganizationService organizationService;
+	private final OrganizationService organizationService;
+
+	public VisitScheduleService(VisitScheduleRepository visitScheduleRepository, CustomerService customerService,
+			TechnicianService technicianService, OrganizationService organizationService) {
+
+		this.visitScheduleRepository = visitScheduleRepository;
+		this.customerService = customerService;
+		this.technicianService = technicianService;
+		this.organizationService = organizationService;
+	}
 
 	public List<VisitScheduleDTO> getAll(Long organizationId) {
 		return new VisitScheduleFactory().build(this.visitScheduleRepository.findAllByOrganizationId(organizationId));
@@ -49,6 +53,10 @@ public class VisitScheduleService {
 				.orElseThrow(() -> new TechnicianNotFoundException("Technician not found."));
 
 		this.visitScheduleRepository.save(factory.build(dto, organization, customer, technician));
+	}
+
+	public void delete(List<Long> ids) {
+		this.visitScheduleRepository.deleteAllByIdInBatch(ids);
 	}
 
 }

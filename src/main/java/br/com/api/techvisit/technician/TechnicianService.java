@@ -3,7 +3,6 @@ package br.com.api.techvisit.technician;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.techvisit.organization.OrganizationService;
@@ -20,14 +19,17 @@ import br.com.api.techvisit.user.definition.UserModel;
 @Service
 public class TechnicianService {
 
-	@Autowired
-	private TechnicianRepository technicianRepository;
+	private final TechnicianRepository technicianRepository;
 
-	@Autowired
-	private OrganizationService organizationService;
+	private final OrganizationService organizationService;
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
+
+	public TechnicianService(TechnicianRepository technicianRepository, OrganizationService organizationService, UserService userService) {
+		this.technicianRepository = technicianRepository;
+		this.organizationService = organizationService;
+		this.userService = userService;
+	}
 
 	public List<TechnicianDTO> getAll(Long organizationId) {
 		return new TechnicianFactory().build(this.technicianRepository.findAllByOrganizationId(organizationId));

@@ -3,7 +3,6 @@ package br.com.api.techvisit.organization;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.techvisit.organization.definition.OrganizationDTO;
@@ -16,8 +15,11 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class OrganizationService {
 
-	@Autowired
-	private OrganizationRepository organizationRepository;
+	private final OrganizationRepository organizationRepository;
+
+	public OrganizationService(OrganizationRepository organizationRepository) {
+		this.organizationRepository = organizationRepository;
+	}
 
 	public List<OrganizationDTO> getAll() {
 		return new OrganizationFactory().build(this.organizationRepository.findAll());

@@ -3,7 +3,6 @@ package br.com.api.techvisit.customer;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.api.techvisit.customer.definition.CustomerDTO;
@@ -19,18 +18,23 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class CustomerService {
 
-	@Autowired
-	private CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
 
-	@Autowired
-	private OrganizationService organizationService;
+	private final OrganizationService organizationService;
+
+	public CustomerService(CustomerRepository customerRepository, OrganizationService organizationService) {
+		this.customerRepository = customerRepository;
+		this.organizationService = organizationService;
+	}
 
 	public List<CustomerDTO> getAllByOrganization(Long organizationId) {
 		return new CustomerFactory().build(this.customerRepository.findAllByOrganizationId(organizationId));
 	}
 
 	public CustomerDTO save(CustomerDTO dto) {
-		OrganizationModel organization = this.organizationService.getOrganizationById(dto.getOrganization().getId()).orElseThrow(() -> new OrganizationNotFoundException("Organization not found."));
+		OrganizationModel organization = this.organizationService.getOrganizationById(dto.getOrganization().getId())
+				.orElseThrow(() -> new OrganizationNotFoundException("Organization not found."));
+
 		dto.setOrganization(new OrganizationFactory().build(organization));
 		return new CustomerFactory().build(this.customerRepository.save(new CustomerFactory().build(dto)));
 	}

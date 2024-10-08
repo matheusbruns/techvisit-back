@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +20,16 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Service
-@Transactional
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
-	OrganizationService organizationService;
+	private final OrganizationService organizationService;
+	
+	public UserService(UserRepository userRepository, OrganizationService organizationService) {
+		this.userRepository = userRepository;
+		this.organizationService = organizationService;
+	}
 	
 	public List<UserDTO> getAll() {
 		return new UserFactory().build(this.userRepository.findAll());
@@ -42,9 +43,19 @@ public class UserService {
 		return data;
 	}
 
-	@Transactional
 	public void delete(List<Long> ids) {
-		this.userRepository.deleteAllById(ids);
+		for (Long id : ids) {
+			try {
+				this.userRepository.deleteById(id);
+			} catch (Exception e) {
+				Optional<UserModel> user = this.userRepository.findById(id);
+				if (user.isPresent()) {
+					user.get().setActive(false);
+					this.userRepository.save(user.get());
+				}
+			}
+		}
+
 	}
 
 	public UserModel saveTechnician(String login, String password, boolean active, OrganizationModel organization) {

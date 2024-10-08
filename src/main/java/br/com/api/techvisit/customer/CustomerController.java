@@ -2,7 +2,6 @@ package br.com.api.techvisit.customer;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,8 +19,11 @@ import br.com.api.techvisit.customer.definition.CustomerDTO;
 @RequestMapping("/customer")
 public class CustomerController {
 
-	@Autowired
-	private CustomerService customerService;
+	private final CustomerService customerService;
+
+	public CustomerController(CustomerService customerService) {
+		this.customerService = customerService;
+	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<CustomerDTO> getAllCustomers(@RequestParam("organization") Long organizationId) {

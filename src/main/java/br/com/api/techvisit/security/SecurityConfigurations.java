@@ -3,7 +3,6 @@ package br.com.api.techvisit.security;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,15 +17,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import br.com.api.techvisit.user.definition.UserRole;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations {
-	
-	@Autowired
-	SecurityFilter securityFilter;
 
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, SecurityFilter securityFilter) throws Exception {
 		return httpSecurity
 				.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
@@ -40,10 +38,10 @@ public class SecurityConfigurations {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-						.requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.POST, "/organization").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.GET, "/user/get-all").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.DELETE, "/user").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.POST, "/auth/register").hasRole(UserRole.ADMIN.getRole())
+						.requestMatchers(HttpMethod.POST, "/organization").hasRole(UserRole.ADMIN.getRole())
+						.requestMatchers(HttpMethod.GET, "/user/get-all").hasRole(UserRole.ADMIN.getRole())
+						.requestMatchers(HttpMethod.DELETE, "/user").hasRole(UserRole.ADMIN.getRole())
 						.anyRequest().authenticated()
 				)
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

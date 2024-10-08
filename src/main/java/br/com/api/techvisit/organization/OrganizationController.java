@@ -2,7 +2,6 @@ package br.com.api.techvisit.organization;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +18,11 @@ import br.com.api.techvisit.organization.definition.OrganizationDTO;
 @RequestMapping("/organization")
 public class OrganizationController {
 
-	@Autowired
-	private OrganizationService organizationService;
+	private final OrganizationService organizationService;
+
+	public OrganizationController(OrganizationService organizationService) {
+		this.organizationService = organizationService;
+	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<OrganizationDTO> getAll() {

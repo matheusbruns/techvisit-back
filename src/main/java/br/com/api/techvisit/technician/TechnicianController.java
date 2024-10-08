@@ -2,7 +2,6 @@ package br.com.api.techvisit.technician;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +21,11 @@ import br.com.api.techvisit.user.exception.LoginAlreadyExistsException;
 @RequestMapping("/technician")
 public class TechnicianController {
 
-	@Autowired
-	private TechnicianService technicianService;
+	private final TechnicianService technicianService;
+
+	public TechnicianController(TechnicianService technicianService) {
+		this.technicianService = technicianService;
+	}
 
 	@GetMapping("/get-all")
 	public List<TechnicianDTO> getAllTechnicians(@RequestParam("organization") Long organizationId) {

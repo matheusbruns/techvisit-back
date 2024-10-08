@@ -2,7 +2,6 @@ package br.com.api.techvisit.authentication;
 
 import java.time.LocalDate;
 import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,19 +28,22 @@ import jakarta.validation.Valid;
 @Service
 public class AuthenticationService implements UserDetailsService {
 
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	@Autowired
-	@Lazy
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	private TokenService tokenService;
-	
-	@Autowired
-	OrganizationService organizationService;
-	
+	private final TokenService tokenService;
+
+	private final OrganizationService organizationService;
+
+	public AuthenticationService(UserRepository userRepository, @Lazy AuthenticationManager authenticationManager,
+			TokenService tokenService, OrganizationService organizationService) {
+		this.userRepository = userRepository;
+		this.authenticationManager = authenticationManager;
+		this.tokenService = tokenService;
+		this.organizationService = organizationService;
+	}
+
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		return this.userRepository.findByLogin(login).orElseThrow(() -> new UsernameNotFoundException("User not found."));

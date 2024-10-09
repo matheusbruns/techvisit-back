@@ -13,6 +13,7 @@ import br.com.api.techvisit.technician.definition.TechnicianModel;
 import br.com.api.techvisit.technician.factory.TechnicianFactory;
 import br.com.api.techvisit.visitschedule.definition.VisitScheduleDTO;
 import br.com.api.techvisit.visitschedule.definition.VisitScheduleModel;
+import br.com.api.techvisit.visitschedule.definition.VisitStatus;
 
 public class VisitScheduleFactory {
 
@@ -37,6 +38,7 @@ public class VisitScheduleFactory {
 		dto.setComment(model.getComment());
 		dto.setStartDate(model.getStartDate() != null ? model.getStartDate().format(FORMATTER) : null);
 		dto.setEndDate(model.getEndDate() != null ? model.getEndDate().format(FORMATTER) : null);
+		dto.setStatus(model.getStatus());
 		return dto;
 	}
 
@@ -65,6 +67,7 @@ public class VisitScheduleFactory {
 		model.setComment(dto.getComment());
 		model.setStartDate(this.millisToLocalDateTime(dto.getStartDate()));
 		model.setEndDate(this.millisToLocalDateTime(dto.getEndDate()));
+		model.setStatus(dto.getStatus() != null ? dto.getStatus() : VisitStatus.SCHEDULED);
 		return model;
 	}
 

@@ -10,38 +10,40 @@ import lombok.Data;
 @Data
 public class VisitScheduleDTO {
 
-	public Long id;
+	private Long id;
 
-	public String description;
+	private String description;
 
-	public CustomerDTO customer;
+	private CustomerDTO customer;
 
-	public TechnicianDTO technician;
+	private TechnicianDTO technician;
 
-	public String phoneNumber;
+	private String phoneNumber;
 
-	public String city;
+	private String city;
 
-	public String state;
+	private String state;
 
-	public String neighborhood;
+	private String neighborhood;
 
-	public String street;
+	private String street;
 
-	public String number;
+	private String number;
 
-	public String complement;
+	private String complement;
 
-	public String cep;
+	private String cep;
 
-	public BigDecimal price;
+	private BigDecimal price;
 
-	public String startDate;
+	private String startDate;
 
-	public String endDate;
+	private String endDate;
 
-	public String comment;
+	private String comment;
 
-	public OrganizationDTO organization;
+	private OrganizationDTO organization;
 
+	private VisitStatus status;
+	
 }

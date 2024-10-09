@@ -14,6 +14,9 @@ import br.com.api.techvisit.technician.TechnicianService;
 import br.com.api.techvisit.technician.definition.TechnicianModel;
 import br.com.api.techvisit.technician.exception.TechnicianNotFoundException;
 import br.com.api.techvisit.visitschedule.definition.VisitScheduleDTO;
+import br.com.api.techvisit.visitschedule.definition.VisitScheduleModel;
+import br.com.api.techvisit.visitschedule.definition.VisitStatus;
+import br.com.api.techvisit.visitschedule.exception.VisitScheduleNotFoundException;
 import br.com.api.techvisit.visitschedule.factory.VisitScheduleFactory;
 
 @Service
@@ -57,6 +60,14 @@ public class VisitScheduleService {
 
 	public void delete(List<Long> ids) {
 		this.visitScheduleRepository.deleteAllByIdInBatch(ids);
+	}
+
+	public VisitScheduleDTO editStatus(Long visitScheduleId, VisitStatus status) {
+		VisitScheduleModel visitScheduleModel = this.visitScheduleRepository.findById(visitScheduleId)
+				.orElseThrow(() -> new VisitScheduleNotFoundException("Visit schedule not found."));
+
+		visitScheduleModel.setStatus(status);
+		return new VisitScheduleFactory().build(this.visitScheduleRepository.save(visitScheduleModel));
 	}
 
 }

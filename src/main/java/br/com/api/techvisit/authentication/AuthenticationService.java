@@ -1,7 +1,6 @@
 package br.com.api.techvisit.authentication;
 
 import java.time.LocalDate;
-import org.apache.coyote.BadRequestException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,7 +58,7 @@ public class AuthenticationService implements UserDetailsService {
 		return new LoginResponseDTO(userInfos, token);
 	}
 
-	public ResponseEntity<?> register(@Valid RegisterDTO data) throws BadRequestException {
+	public ResponseEntity<String> register(@Valid RegisterDTO data) {
 		if (this.userRepository.findByLogin(data.login()).isPresent()) {
 			return ResponseEntity.badRequest().build();
 		}

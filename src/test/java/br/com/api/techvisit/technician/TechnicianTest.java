@@ -1,4 +1,4 @@
-package br.com.techvisit.api.technician;
+package br.com.api.techvisit.technician;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,8 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import br.com.api.techvisit.organization.OrganizationService;
-import br.com.api.techvisit.technician.TechnicianRepository;
-import br.com.api.techvisit.technician.TechnicianService;
 import br.com.api.techvisit.technician.definition.TechnicianDTO;
 import br.com.api.techvisit.technician.definition.TechnicianModel;
 import br.com.api.techvisit.user.UserService;
@@ -40,8 +38,7 @@ class TechnicianTest {
 	void testGetAllTechnicians() {
 		Long organizationId = 1L;
 
-		List<TechnicianModel> technicians = Arrays.asList(new TechnicianModel(),
-				new TechnicianModel());
+		List<TechnicianModel> technicians = Arrays.asList(new TechnicianModel(), new TechnicianModel());
 
 		when(technicianRepository.findAllByOrganizationId(organizationId)).thenReturn(technicians);
 

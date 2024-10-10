@@ -21,6 +21,7 @@ public class OrganizationService {
 		this.organizationRepository = organizationRepository;
 	}
 
+	
 	public List<OrganizationDTO> getAll() {
 		return new OrganizationFactory().build(this.organizationRepository.findAll());
 	}

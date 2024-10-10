@@ -1,6 +1,5 @@
 package br.com.api.techvisit.authentication;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +27,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO data) throws BadRequestException {
+	public ResponseEntity<String> register(@RequestBody @Valid RegisterDTO data) {
 		return this.authenticationService.register(data);
 	}
 }

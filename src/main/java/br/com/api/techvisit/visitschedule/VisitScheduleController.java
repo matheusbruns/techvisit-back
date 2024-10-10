@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.api.techvisit.visitschedule.definition.EditStatusRequestDTO;
 import br.com.api.techvisit.visitschedule.definition.VisitScheduleDTO;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/visit-schedule")
@@ -32,7 +34,7 @@ public class VisitScheduleController {
 	}
 
 	@PostMapping
-	public ResponseEntity<String> save(@RequestBody VisitScheduleDTO dto) {
+	public ResponseEntity<String> save(@Valid @RequestBody VisitScheduleDTO dto) {
 		try {
 			this.visitScheduleService.save(dto);
 			return ResponseEntity.status(HttpStatus.OK).body("");

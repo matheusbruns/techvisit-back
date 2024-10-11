@@ -39,7 +39,7 @@ public class SecurityConfigurations {
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/register").hasRole(UserRole.ADMIN.getRole())
-						.requestMatchers(HttpMethod.POST, "/organization").hasRole(UserRole.ADMIN.getRole())
+						.requestMatchers("/organization").hasRole(UserRole.ADMIN.getRole())
 						.requestMatchers(HttpMethod.GET, "/user/get-all").hasRole(UserRole.ADMIN.getRole())
 						.requestMatchers(HttpMethod.DELETE, "/user").hasRole(UserRole.ADMIN.getRole())
 						.anyRequest().authenticated()

@@ -1,5 +1,6 @@
 package br.com.api.techvisit.organization.definition;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import br.com.api.techvisit.generic.GenericModel;
@@ -11,7 +12,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "organizations")
 @EqualsAndHashCode(callSuper = true)
-public class OrganizationModel extends GenericModel {
+public class OrganizationModel extends GenericModel implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Column(name = "external_code", unique = true)
 	private String externalCode;

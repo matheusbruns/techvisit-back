@@ -15,7 +15,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,7 +39,6 @@ public class UserModel extends GenericModel implements UserDetails {
 	@Column(name = "creation_date")
 	private LocalDate creationDate;
 
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "organization_id")
 	private OrganizationModel organization;

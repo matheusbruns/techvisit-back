@@ -54,7 +54,7 @@ public class AuthenticationService implements UserDetailsService {
 		var token = tokenService.generateToken((UserModel) auth.getPrincipal());
 		UserModel user = this.userRepository.findUserByLogin(data.login()).orElseThrow(() -> new UsernameNotFoundException("User not found."));
 		
-		UserResponseDTO userInfos = new UserResponseDTO(user.getLogin(), user.getRole(),  new OrganizationFactory().buildResponse(user.getOrganization()), user.isActive());
+		UserResponseDTO userInfos = new UserResponseDTO(user.getId(), user.getLogin(), user.getRole(), new OrganizationFactory().buildResponse(user.getOrganization()), user.isActive());
 		return new LoginResponseDTO(userInfos, token);
 	}
 
@@ -68,7 +68,7 @@ public class AuthenticationService implements UserDetailsService {
 		UserModel newUser = new UserModel(data.login(), encryptedPassword, data.role(), organization, LocalDate.now(), data.active());
 
 		this.userRepository.save(newUser);
-		
+
 		return ResponseEntity.ok().build();
 	}
 

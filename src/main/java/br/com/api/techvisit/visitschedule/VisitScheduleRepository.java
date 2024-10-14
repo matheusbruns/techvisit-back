@@ -14,4 +14,7 @@ public interface VisitScheduleRepository extends JpaRepository<VisitScheduleMode
 	@Query("SELECT vs FROM VisitScheduleModel vs WHERE vs.organization.id = :organizationId ORDER BY vs.startDate DESC")
 	List<VisitScheduleModel> findAllByOrganizationId(Long organizationId);
 
+	@Query("SELECT vs FROM VisitScheduleModel vs WHERE vs.organization.id = :organizationId and vs.technician.user.id = :userId ORDER BY vs.startDate DESC")
+	List<VisitScheduleModel> findAllByOrganizationIdAndUserId(Long organizationId, Long userId);
+
 }

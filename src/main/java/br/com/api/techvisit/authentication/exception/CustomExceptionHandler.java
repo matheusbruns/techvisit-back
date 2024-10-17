@@ -15,38 +15,38 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-	final String errorCode = "errorCode";
-	final String message = "message";
+	static final String ERROR_CODE = "errorCode";
+	static final String MESSAGE = "message";
 
 	@ExceptionHandler(InvalidCredentialsException.class)
 	public ResponseEntity<Map<String, String>> handleInvalidCredentialsException(InvalidCredentialsException ex) {
 		Map<String, String> error = new HashMap<>();
-		error.put(errorCode, "INVALID_CREDENTIALS");
-		error.put(message, ex.getMessage());
+		error.put(ERROR_CODE, "INVALID_CREDENTIALS");
+		error.put(MESSAGE, ex.getMessage());
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 	}
 
 	@ExceptionHandler(DisabledException.class)
 	public ResponseEntity<Map<String, String>> handleDisabledException(DisabledException ex) {
 		Map<String, String> error = new HashMap<>();
-		error.put(errorCode, "USER_INACTIVE");
-		error.put(message, "Usuário inativo.");
+		error.put(ERROR_CODE, "USER_INACTIVE");
+		error.put(MESSAGE, "Usuário inativo.");
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 	}
 
 	@ExceptionHandler(TokenExpiredException.class)
 	public ResponseEntity<Map<String, String>> handleTokenExpiredException(TokenExpiredException ex) {
 		Map<String, String> error = new HashMap<>();
-		error.put(errorCode, "TOKEN_EXPIRED");
-		error.put(message, "Sessão expirada.");
+		error.put(ERROR_CODE, "TOKEN_EXPIRED");
+		error.put(MESSAGE, "Sessão expirada.");
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 	}
 
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<Map<String, String>> handleAccessDeniedException(AccessDeniedException ex) {
 		Map<String, String> error = new HashMap<>();
-		error.put(errorCode, "ACCESS_DENIED");
-		error.put(message, "Acesso negado.");
+		error.put(ERROR_CODE, "ACCESS_DENIED");
+		error.put(MESSAGE, "Acesso negado.");
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 	}
 

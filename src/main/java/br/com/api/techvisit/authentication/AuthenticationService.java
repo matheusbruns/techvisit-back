@@ -1,10 +1,8 @@
 package br.com.api.techvisit.authentication;
 
 import java.time.LocalDate;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 import br.com.api.techvisit.authentication.definition.AuthenticationDTO;
 import br.com.api.techvisit.authentication.definition.LoginResponseDTO;
 import br.com.api.techvisit.authentication.definition.RegisterDTO;
+import br.com.api.techvisit.authentication.exception.InvalidCredentialsException;
 import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
 import br.com.api.techvisit.organization.exception.OrganizationNotFoundException;
@@ -29,32 +28,38 @@ public class AuthenticationService implements UserDetailsService {
 
 	private final UserRepository userRepository;
 
-	private final AuthenticationManager authenticationManager;
-
 	private final TokenService tokenService;
 
 	private final OrganizationService organizationService;
 
-	public AuthenticationService(UserRepository userRepository, @Lazy AuthenticationManager authenticationManager,
-			TokenService tokenService, OrganizationService organizationService) {
+	public AuthenticationService(UserRepository userRepository, TokenService tokenService, OrganizationService organizationService) {
 		this.userRepository = userRepository;
-		this.authenticationManager = authenticationManager;
 		this.tokenService = tokenService;
 		this.organizationService = organizationService;
 	}
 
 	@Override
-	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String login)  {
 		return this.userRepository.findByLogin(login).orElseThrow(() -> new UsernameNotFoundException("User not found."));
 	}
 
 	public LoginResponseDTO login(@Valid AuthenticationDTO data) {
-		var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-		var auth = this.authenticationManager.authenticate(usernamePassword);
-		var token = tokenService.generateToken((UserModel) auth.getPrincipal());
-		UserModel user = this.userRepository.findUserByLogin(data.login()).orElseThrow(() -> new UsernameNotFoundException("User not found."));
-		
-		UserResponseDTO userInfos = new UserResponseDTO(user.getId(), user.getLogin(), user.getRole(), new OrganizationFactory().buildResponse(user.getOrganization()), user.isActive());
+		UserModel user = this.userRepository.findUserByLogin(data.login())
+				.orElseThrow(() -> new InvalidCredentialsException("Usuário ou senha inválidos."));
+
+		if (!user.isActive()) {
+			throw new DisabledException("Usuário inativo.");
+		}
+
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		if (!passwordEncoder.matches(data.password(), user.getPassword())) {
+			throw new InvalidCredentialsException("Usuário ou senha inválidos.");
+		}
+
+		var token = tokenService.generateToken(user);
+
+		UserResponseDTO userInfos = new UserResponseDTO(user.getId(), user.getLogin(), user.getRole(),
+				new OrganizationFactory().buildResponse(user.getOrganization()), user.isActive());
 		return new LoginResponseDTO(userInfos, token);
 	}
 

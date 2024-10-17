@@ -18,7 +18,7 @@ import br.com.api.techvisit.user.definition.UserModel;
 public class TokenService {
 
 	@Value("${api.security.token.secret}")
-	private String secret;
+	public String secret;
 	
 	public String generateToken(UserModel user) {
 

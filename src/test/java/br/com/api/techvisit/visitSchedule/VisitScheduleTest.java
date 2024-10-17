@@ -30,7 +30,7 @@ import br.com.api.techvisit.visitschedule.definition.VisitStatus;
 import br.com.api.techvisit.visitschedule.exception.VisitScheduleNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
-class VisitScheduleServiceTest {
+class VisitScheduleTest {
 
 	@Mock
 	private VisitScheduleRepository visitScheduleRepository;

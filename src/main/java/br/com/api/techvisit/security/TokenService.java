@@ -18,20 +18,19 @@ import br.com.api.techvisit.user.definition.UserModel;
 public class TokenService {
 
 	@Value("${api.security.token.secret}")
-	private String secret;
+	public String secret;
 	
 	public String generateToken(UserModel user) {
 
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secret);
-			String token = JWT.create()
+			return JWT.create()
 					.withIssuer("auth-api")
 					.withSubject(user.getLogin())
 					.withExpiresAt(getExpirationDate())
 					.sign(algorithm);
-			return token;
 		} catch (JWTCreationException exception) {
-			throw new RuntimeException("Error while generating token", exception);
+			throw new JWTCreationException("Error while generating token", exception);
 		}
 
 	}

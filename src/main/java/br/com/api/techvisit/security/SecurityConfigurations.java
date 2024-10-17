@@ -2,6 +2,7 @@ package br.com.api.techvisit.security;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,7 @@ public class SecurityConfigurations {
 				.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfig = new CorsConfiguration();
-                    corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                    corsConfig.setAllowedOrigins(this.allowedOrigins());
                     corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfig.setAllowedHeaders(Collections.singletonList("*"));
                     corsConfig.setAllowCredentials(true);
@@ -39,13 +40,19 @@ public class SecurityConfigurations {
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/register").hasRole(UserRole.ADMIN.getRole())
-						.requestMatchers(HttpMethod.POST, "/organization").hasRole(UserRole.ADMIN.getRole())
+						.requestMatchers("/organization").hasRole(UserRole.ADMIN.getRole())
 						.requestMatchers(HttpMethod.GET, "/user/get-all").hasRole(UserRole.ADMIN.getRole())
 						.requestMatchers(HttpMethod.DELETE, "/user").hasRole(UserRole.ADMIN.getRole())
+						.requestMatchers(HttpMethod.GET, "/my-visits").hasRole(UserRole.TECHNICIAN.getRole())
+						.requestMatchers(HttpMethod.PUT, "/my-visits/update").hasRole(UserRole.TECHNICIAN.getRole())
 						.anyRequest().authenticated()
 				)
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
+	}
+	
+	private List<String> allowedOrigins(){
+		return List.of("http://localhost:3000", "https://techvisit-front.vercel.app/");
 	}
 
 	@Bean

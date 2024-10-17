@@ -70,4 +70,18 @@ public class VisitScheduleService {
 		return new VisitScheduleFactory().build(this.visitScheduleRepository.save(visitScheduleModel));
 	}
 
+	public List<VisitScheduleDTO> getAllByUserId(Long organizationId, Long userId) {
+		return new VisitScheduleFactory().build(this.visitScheduleRepository.findAllByOrganizationIdAndUserId(organizationId, userId));
+	}
+
+	public VisitScheduleDTO updateVisit(VisitScheduleDTO visitScheduleDTO) {
+		VisitScheduleModel visitSchedule = this.visitScheduleRepository.findById(visitScheduleDTO.getId())
+				.orElseThrow(() -> new VisitScheduleNotFoundException("Visit schedule not found."));
+		
+		visitSchedule.setPrice(visitScheduleDTO.getPrice());
+		visitSchedule.setComment(visitScheduleDTO.getComment());
+		visitSchedule.setStatus(VisitStatus.ATTENDED);
+		return new VisitScheduleFactory().build(this.visitScheduleRepository.save(visitSchedule));
+	}
+
 }

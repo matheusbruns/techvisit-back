@@ -54,4 +54,14 @@ public class VisitScheduleController {
 		return this.visitScheduleService.editStatus(dto.visitScheduleId(), dto.status());
 	}
 
+	@GetMapping("/my-visits")
+	public List<VisitScheduleDTO> getAll(@RequestParam("organization") Long organizationId, @RequestParam("user") Long userId) {
+		return this.visitScheduleService.getAllByUserId(organizationId, userId);
+	}
+
+	@PutMapping("/my-visits/update")
+	public VisitScheduleDTO updateVisit(@RequestBody VisitScheduleDTO visitScheduleDTO) {
+		return this.visitScheduleService.updateVisit(visitScheduleDTO);
+	}
+
 }

@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import br.com.api.techvisit.authentication.exception.CustomAuthenticationEntryPoint;
 import br.com.api.techvisit.user.definition.UserRole;
 
 @Configuration
@@ -25,7 +26,7 @@ import br.com.api.techvisit.user.definition.UserRole;
 public class SecurityConfigurations {
 
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, SecurityFilter securityFilter) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, SecurityFilter securityFilter, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
 		return httpSecurity
 				.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
@@ -47,6 +48,8 @@ public class SecurityConfigurations {
 						.requestMatchers(HttpMethod.PUT, "/my-visits/update").hasRole(UserRole.TECHNICIAN.getRole())
 						.anyRequest().authenticated()
 				)
+				.exceptionHandling(exceptionHandling -> exceptionHandling
+						.authenticationEntryPoint(customAuthenticationEntryPoint))
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}

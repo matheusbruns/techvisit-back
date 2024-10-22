@@ -18,8 +18,19 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
       - name: Build project
-        run: mvn clean install -DskipTests
+        run: mvn clean package -DskipTests -e
+
+      - name: List target directory
+        run: ls -l target/
 
       - name: Login Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
@@ -31,14 +42,22 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/techvisit
 
   deploy:
-      needs: build
-      runs-on: self-hosted
-      steps:
-        - name: Pull image from docker hub
-          run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/techvisit:latest
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull image from Docker Hub
+        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/techvisit:latest
 
-        - name: Remove docker container
-          run: sudo docker rm -f techvisit
+      - name: Remove existing Docker container
+        run: |
+          if [ $(sudo docker ps -a -q -f name=techvisit) ]; then
+            sudo docker rm -f techvisit
+          fi
 
-        - name: Run docker container
-          run: sudo docker run -d -p 8080:8080 -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD='${{secrets.DATABASE_PASSWORD}}' -e DATABASE_URL=${{secrets.DATABASE_URL}} --name techvisit ${{ secrets.DOCKER_USERNAME }}/techvisit:latest
+      - name: Run Docker container
+        run: |
+          sudo docker run -d -p 8080:8080 \
+          -e DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
+          -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+          -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+          --name techvisit ${{ secrets.DOCKER_USERNAME }}/techvisit:latest

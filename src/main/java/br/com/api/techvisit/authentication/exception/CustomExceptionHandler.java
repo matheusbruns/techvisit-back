@@ -31,4 +31,13 @@ public class CustomExceptionHandler {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 	}
 
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Map<String, String>> handleInternalServerError(Exception ex) {
+		Map<String, String> error = new HashMap<>();
+		error.put(ERROR_CODE, "INTERNAL_SERVER_ERROR");
+		error.put(MESSAGE, "Ocorreu um erro interno no servidor.");
+
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+	}
+
 }

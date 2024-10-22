@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -18,25 +20,31 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
       - name: Build project
         run: mvn clean package -DskipTests -e
 
+      - name: List current directory contents
+        run: ls -la
+
       - name: List target directory
-        run: ls -l target/
+        run: ls -la target/
+
+      - name: Display .dockerignore contents
+        run: |
+          if [ -f .dockerignore ]; then
+            echo ".dockerignore contents:"
+            cat .dockerignore
+          else
+            echo "No .dockerignore file found."
+          fi
+
+      - name: Build Docker image
+        run: |
+          export DOCKER_BUILDKIT=0
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/techvisit -f ./Dockerfile .
 
       - name: Login Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/techvisit .
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/techvisit

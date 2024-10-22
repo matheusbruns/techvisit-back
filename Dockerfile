@@ -1,5 +1,5 @@
-FROM eclipse-temurin:21-jdk
+FROM eclipse-temurin:17-jdk-focal
 WORKDIR /app
-COPY target/techvisit-0.0.0.jar app.jar
+COPY /target/techvisit-0.0.0.jar techvisit-0.0.0.jar
 EXPOSE 8080
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "techvisit-0.0.0.jar"]

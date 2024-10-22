@@ -1,4 +1,4 @@
-name: Techvisit Deploy
+name: Techvisit Deploy Application
 
 on:
   push:
@@ -11,61 +11,34 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
       - name: Build project
-        run: mvn clean package -DskipTests -e
-
-      - name: List current directory contents
-        run: ls -la
-
-      - name: List target directory
-        run: ls -la target/
-
-      - name: Display .dockerignore contents
-        run: |
-          if [ -f .dockerignore ]; then
-            echo ".dockerignore contents:"
-            cat .dockerignore
-          else
-            echo "No .dockerignore file found."
-          fi
-
-      - name: Build Docker image
-        run: |
-          export DOCKER_BUILDKIT=0
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/techvisit -f ./Dockerfile .
+        run: mvn clean install -DskipTests
 
       - name: Login Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/techvisit .
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/techvisit
 
   deploy:
-    needs: build
-    runs-on: self-hosted
-    steps:
-      - name: Pull image from Docker Hub
-        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/techvisit:latest
+      needs: build
+      runs-on: self-hosted
+      steps:
+        - name: Pull image from docker hub
+          run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/techvisit:latest
 
-      - name: Remove existing Docker container
-        run: |
-          if [ $(sudo docker ps -a -q -f name=techvisit) ]; then
-            sudo docker rm -f techvisit
-          fi
+        - name: Remove docker container
+          run: sudo docker rm -f techvisit
 
-      - name: Run Docker container
-        run: |
-          sudo docker run -d -p 8080:8080 \
-          -e DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
-          -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
-          -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
-          --name techvisit ${{ secrets.DOCKER_USERNAME }}/techvisit:latest
+        - name: Run docker container
+          run: sudo docker run -d -p 8080:8080 -e DATABASE_USERNAME=${{secrets.DATABASE_USERNAME}} -e DATABASE_PASSWORD='${{secrets.DATABASE_PASSWORD}}' -e DATABASE_URL=${{secrets.DATABASE_URL}} --name techvisit ${{ secrets.DOCKER_USERNAME }}/techvisit:latest

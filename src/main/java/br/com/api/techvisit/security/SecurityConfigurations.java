@@ -55,7 +55,7 @@ public class SecurityConfigurations {
 	}
 	
 	private List<String> allowedOrigins(){
-		return List.of("http://localhost:3000", "https://techvisit-front.vercel.app/");
+		return List.of("http://localhost:3000", "https://techvisit-front.vercel.app/", "https://techvisit.tech/");
 	}
 
 	@Bean

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.techvisit.customer.definition.CustomerDTO;
+import br.com.api.techvisit.customer.exception.CannotDeleteCustomerException;
 
 @RestController
 @RequestMapping("/customer")
@@ -36,10 +38,16 @@ public class CustomerController {
 		return this.customerService.save(customerBean);
 	}
 
-	@DeleteMapping()
+	@DeleteMapping
 	@ResponseStatus(HttpStatus.OK)
-	public void delete(@RequestBody List<Long> ids) {
-		this.customerService.delete(ids);
+	public ResponseEntity<String> delete(@RequestBody List<Long> ids) {
+	    try {
+	        this.customerService.delete(ids);
+	        return ResponseEntity.ok("Clientes excluídos com sucesso.");
+	    } catch (CannotDeleteCustomerException e) {
+	        return ResponseEntity.status(HttpStatus.CONFLICT).body("Existem dados vinculados. Não é possível excluir os clientes.");
+	    }
 	}
+
 
 }

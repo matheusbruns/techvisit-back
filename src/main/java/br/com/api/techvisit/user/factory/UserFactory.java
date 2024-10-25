@@ -9,7 +9,7 @@ import br.com.api.techvisit.user.definition.UserModel;
 
 public class UserFactory {
 
-	private UserDTO build(UserModel user) {
+	public UserDTO build(UserModel user) {
 		UserDTO dto = new UserDTO();
 		dto.setId(user.getId());
 		dto.setLogin(user.getLogin());

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.api.techvisit.authentication.definition.AuthenticationDTO;
 import br.com.api.techvisit.user.definition.UserDTO;
 import jakarta.validation.Valid;
 
@@ -38,6 +39,11 @@ public class UserController {
 	@ResponseStatus(HttpStatus.OK)
 	public void delete(@RequestBody List<Long> ids) {
 		this.userService.delete(ids);
+	}
+	
+	@PutMapping("/update-password")
+	public UserDTO updatePassword(@RequestBody AuthenticationDTO loginInfo) {
+		return this.userService.updatePassword(loginInfo);
 	}
 
 }

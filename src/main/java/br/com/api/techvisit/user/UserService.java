@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.api.techvisit.authentication.definition.AuthenticationDTO;
 import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
 import br.com.api.techvisit.organization.exception.OrganizationNotFoundException;
@@ -78,6 +79,14 @@ public class UserService {
 		user.setPassword(encryptedPassword);
 		user.setActive(active);
 		this.userRepository.save(user);
+	}
+
+	public UserDTO updatePassword(AuthenticationDTO loginInfo) {
+		UserModel user = this.userRepository.findUserByLogin(loginInfo.login()).orElseThrow(() -> new UserNotFoundException("User not found!"));
+
+		String encryptedPassword = new BCryptPasswordEncoder().encode(loginInfo.password());
+		user.setPassword(encryptedPassword);
+		return new UserFactory().build(this.userRepository.save(user));
 	}
 
 }

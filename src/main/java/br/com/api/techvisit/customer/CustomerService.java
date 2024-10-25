@@ -40,7 +40,12 @@ public class CustomerService {
 	}
 
 	public void delete(List<Long> ids) {
-		this.customerRepository.deleteAllByIdInBatch(ids);
+		try {
+			this.customerRepository.deleteAllByIdInBatch(ids);
+		} catch (Exception e) {
+			throw new RuntimeException("Existem dados vinculados. Não é possível excluir os clientes.");
+		}
+
 	}
 
 	public Optional<CustomerModel> getCustomerById(Long customerId) {

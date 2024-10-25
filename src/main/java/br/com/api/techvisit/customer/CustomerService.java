@@ -3,10 +3,12 @@ package br.com.api.techvisit.customer;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.api.techvisit.customer.definition.CustomerDTO;
 import br.com.api.techvisit.customer.definition.CustomerModel;
+import br.com.api.techvisit.customer.exception.CannotDeleteCustomerException;
 import br.com.api.techvisit.customer.factory.CustomerFactory;
 import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
@@ -40,7 +42,11 @@ public class CustomerService {
 	}
 
 	public void delete(List<Long> ids) {
-		this.customerRepository.deleteAllByIdInBatch(ids);
+	    try {
+	        this.customerRepository.deleteAllByIdInBatch(ids);
+	    } catch (DataIntegrityViolationException e) {
+	        throw new CannotDeleteCustomerException("Existem dados vinculados. Não é possível excluir os clientes.");
+	    }
 	}
 
 	public Optional<CustomerModel> getCustomerById(Long customerId) {

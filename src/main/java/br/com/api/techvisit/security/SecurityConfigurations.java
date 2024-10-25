@@ -39,6 +39,8 @@ public class SecurityConfigurations {
                 }))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+						.requestMatchers("/actuator/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/auth/register").hasRole(UserRole.ADMIN.getRole())
 						.requestMatchers("/organization").hasRole(UserRole.ADMIN.getRole())
@@ -46,6 +48,8 @@ public class SecurityConfigurations {
 						.requestMatchers(HttpMethod.DELETE, "/user").hasRole(UserRole.ADMIN.getRole())
 						.requestMatchers(HttpMethod.GET, "/my-visits").hasRole(UserRole.TECHNICIAN.getRole())
 						.requestMatchers(HttpMethod.PUT, "/my-visits/update").hasRole(UserRole.TECHNICIAN.getRole())
+                        .requestMatchers("/user", "/user/**").hasRole(UserRole.ADMIN.getRole())
+                        .requestMatchers("/visit-schedule/my-visits", "/visit-schedule/my-visits/**").hasRole(UserRole.TECHNICIAN.getRole())
 						.anyRequest().authenticated()
 				)
 				.exceptionHandling(exceptionHandling -> exceptionHandling

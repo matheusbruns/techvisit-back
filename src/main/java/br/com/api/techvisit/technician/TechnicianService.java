@@ -54,6 +54,7 @@ public class TechnicianService {
 		existingTechnician.setEmail(dto.getEmail());
 		existingTechnician.setPhoneNumber(dto.getPhoneNumber());
 		existingTechnician.setCpf(dto.getCpf());
+		existingTechnician.getUser().setActive(dto.isActive());
 
 		if (dto.getPassword() != null) {
 			this.userService.updatePasswordAndActive(dto.getLogin(), dto.getPassword(), dto.isActive());

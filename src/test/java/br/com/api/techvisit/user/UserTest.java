@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import br.com.api.techvisit.authentication.definition.AuthenticationDTO;
 import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationDTO;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
@@ -38,6 +40,9 @@ class UserTest {
 
 	@InjectMocks
 	private UserService userService;
+
+	@InjectMocks
+	private UserController userController;
 
 	@BeforeEach
 	void setUp() {
@@ -143,6 +148,24 @@ class UserTest {
 
 		assertThrows(UserNotFoundException.class,
 				() -> userService.updatePasswordAndActive(login, newPassword, active));
+	}
+
+	@Test
+	void testUpdatePassword_UserNotFound() {
+		AuthenticationDTO authDTO = new AuthenticationDTO("nonExistingUser", "newPassword");
+
+		when(userRepository.findUserByLogin(authDTO.login())).thenReturn(Optional.empty());
+
+		assertThrows(UserNotFoundException.class, () -> userService.updatePassword(authDTO));
+		verify(userRepository, never()).save(any(UserModel.class));
+	}
+
+	@Test
+	void testUserControllerConstructor() {
+		UserService mockService = mock(UserService.class);
+		UserController controller = new UserController(mockService);
+
+		assertEquals(mockService, controller.userService);
 	}
 
 }

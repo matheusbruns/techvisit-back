@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,10 +123,52 @@ class VisitScheduleTest {
 	}
 
 	@Test
+	void testGetAllVisitSchedulesByUser() {
+		when(visitScheduleRepository.findAllByOrganizationIdAndUserId(1L, 1L)).thenReturn(List.of(visitScheduleModel));
+
+		List<VisitScheduleDTO> result = visitScheduleService.getAllByUserId(1L, 1L);
+		assertNotNull(result);
+		assertEquals(1L, result.size());
+	}
+
+	@Test
+	void testUpdateVisitSuccess() {
+		when(visitScheduleRepository.findById(1L)).thenReturn(Optional.of(visitScheduleModel));
+		when(visitScheduleRepository.save(any(VisitScheduleModel.class))).thenReturn(visitScheduleModel);
+
+		VisitScheduleDTO updatedDTO = new VisitScheduleDTO();
+		updatedDTO.setId(1L);
+		updatedDTO.setPrice(BigDecimal.valueOf(100));
+		updatedDTO.setComment("New comment");
+
+		VisitScheduleDTO result = visitScheduleService.updateVisit(updatedDTO);
+
+		assertNotNull(result);
+		assertEquals(BigDecimal.valueOf(100), result.getPrice());
+		assertEquals("New comment", result.getComment());
+		assertEquals(VisitStatus.ATTENDED, result.getStatus());
+		verify(visitScheduleRepository, times(1)).findById(1L);
+		verify(visitScheduleRepository, times(1)).save(any(VisitScheduleModel.class));
+	}
+
+	@Test
+	void testUpdateVisitThrowsVisitScheduleNotFoundException() {
+		when(visitScheduleRepository.findById(1L)).thenReturn(Optional.empty());
+
+		VisitScheduleDTO updatedDTO = new VisitScheduleDTO();
+		updatedDTO.setId(1L);
+		updatedDTO.setPrice(BigDecimal.valueOf(100));
+		updatedDTO.setComment("New comment");
+
+		assertThrows(VisitScheduleNotFoundException.class, () -> visitScheduleService.updateVisit(updatedDTO));
+		verify(visitScheduleRepository, times(1)).findById(1L);
+		verify(visitScheduleRepository, times(0)).save(any(VisitScheduleModel.class));
+	}
+
+	@Test
 	void testDeleteSuccess() {
 		doNothing().when(visitScheduleRepository).deleteAllByIdInBatch(any());
 		assertDoesNotThrow(() -> visitScheduleService.delete(List.of(1L)));
 		verify(visitScheduleRepository, times(1)).deleteAllByIdInBatch(any());
 	}
-
 }

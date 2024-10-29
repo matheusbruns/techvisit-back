@@ -4,16 +4,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -21,11 +20,18 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import br.com.api.techvisit.authentication.definition.AuthenticationDTO;
 import br.com.api.techvisit.authentication.definition.LoginResponseDTO;
+import br.com.api.techvisit.authentication.definition.RegisterDTO;
+import br.com.api.techvisit.organization.OrganizationService;
+import br.com.api.techvisit.security.SecurityConfigurations;
+import br.com.api.techvisit.security.TokenService;
+import br.com.api.techvisit.user.UserRepository;
+import br.com.api.techvisit.user.UserService;
 import br.com.api.techvisit.user.definition.UserResponseDTO;
 import br.com.api.techvisit.user.definition.UserRole;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Import(SecurityConfigurations.class)
 class SecurityConfigurationsTest {
 
 	@Autowired
@@ -33,6 +39,18 @@ class SecurityConfigurationsTest {
 
 	@MockBean
 	private AuthenticationService authenticationService;
+
+	@MockBean
+	private UserRepository userRepository;
+
+	@MockBean
+	private TokenService tokenService;
+
+	@MockBean
+	private OrganizationService organizationService;
+
+	@MockBean
+	private UserService userService;
 
 	@Test
 	@DisplayName("Deve permitir login sem autenticação")
@@ -75,12 +93,11 @@ class SecurityConfigurationsTest {
 	@DisplayName("Deve permitir ADMIN registrar usuários")
 	@WithMockUser(username = "admin", roles = { "ADMIN" })
 	void shouldAllowAdminToRegisterUsers() throws Exception {
-		Mockito.when(authenticationService.register(Mockito.any()))
-			.thenReturn(ResponseEntity.ok().build());
+		when(authenticationService.register(any(RegisterDTO.class))).thenReturn(ResponseEntity.ok().build());
 
 		mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(
 				"{\"login\":\"newuser\",\"password\":\"password\",\"role\":\"USER\",\"organization\":null,\"active\":true}"))
-				.andDo(print()).andExpect(status().isOk());
+				.andExpect(status().isOk());
 	}
 
 	@Test

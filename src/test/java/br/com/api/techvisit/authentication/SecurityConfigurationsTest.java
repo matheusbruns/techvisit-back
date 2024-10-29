@@ -1,5 +1,7 @@
 package br.com.api.techvisit.authentication;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -11,10 +13,16 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import br.com.api.techvisit.authentication.definition.AuthenticationDTO;
+import br.com.api.techvisit.authentication.definition.LoginResponseDTO;
+import br.com.api.techvisit.user.definition.UserResponseDTO;
+import br.com.api.techvisit.user.definition.UserRole;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -23,12 +31,15 @@ class SecurityConfigurationsTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Autowired
+	@MockBean
 	private AuthenticationService authenticationService;
 
 	@Test
 	@DisplayName("Deve permitir login sem autenticação")
 	void shouldAllowLogin() throws Exception {
+		when(authenticationService.login(any(AuthenticationDTO.class)))
+				.thenReturn(new LoginResponseDTO(new UserResponseDTO(1L, "user", UserRole.USER, null, true), "token"));
+
 		mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
 				.content("{\"login\":\"user\",\"password\":\"password\"}")).andExpect(status().isOk());
 	}

@@ -27,6 +27,8 @@ public class UserService {
 
 	private final OrganizationService organizationService;
 	
+	private static final String USER_NOT_FOUNT = "User not found!";
+	
 	public UserService(UserRepository userRepository, OrganizationService organizationService) {
 		this.userRepository = userRepository;
 		this.organizationService = organizationService;
@@ -38,7 +40,7 @@ public class UserService {
 
 	@Transactional
 	public UserDTO update(@Valid UserDTO data) {
-		UserModel user = this.userRepository.findById(data.getId()).orElseThrow(() -> new UserNotFoundException("User not found!"));
+		UserModel user = this.userRepository.findById(data.getId()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUNT));
 		OrganizationModel organization = this.organizationService.getOrganizationById(data.getOrganization().getId()).orElseThrow(() -> new OrganizationNotFoundException("Organizatin not found."));
 		this.userRepository.save(new UserFactory().buildUpdate(user, data, organization));
 		return data;
@@ -74,7 +76,7 @@ public class UserService {
 	}
 
 	public void updatePasswordAndActive(String login, String password, boolean active) {
-		UserModel user = this.userRepository.findUserByLogin(login).orElseThrow(() -> new UserNotFoundException("User not found!"));
+		UserModel user = this.userRepository.findUserByLogin(login).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUNT));
 		String encryptedPassword = new BCryptPasswordEncoder().encode(password);
 		user.setPassword(encryptedPassword);
 		user.setActive(active);
@@ -82,7 +84,7 @@ public class UserService {
 	}
 
 	public UserDTO updatePassword(AuthenticationDTO loginInfo) {
-		UserModel user = this.userRepository.findUserByLogin(loginInfo.login()).orElseThrow(() -> new UserNotFoundException("User not found!"));
+		UserModel user = this.userRepository.findUserByLogin(loginInfo.login()).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUNT));
 
 		String encryptedPassword = new BCryptPasswordEncoder().encode(loginInfo.password());
 		user.setPassword(encryptedPassword);

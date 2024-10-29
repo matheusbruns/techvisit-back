@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -19,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -232,5 +234,50 @@ class AuthenticationTest {
 
 		assertEquals("", username);
 	}
+
+	@Test
+	void testLogin_InvalidPassword_Service() {
+		when(userRepository.findUserByLogin("user1")).thenReturn(Optional.of(userModel));
+
+		AuthenticationDTO invalidAuthDTO = new AuthenticationDTO("user1", "wrongpassword");
+
+		assertThrows(InvalidCredentialsException.class, () -> {
+			authenticationServiceUnderTest.login(invalidAuthDTO);
+		});
+
+		verifyNoInteractions(tokenService);
+	}
+
+	@Test
+	void testLogin_InactiveUser_Service() {
+		userModel.setActive(false);
+
+		when(userRepository.findUserByLogin("user1")).thenReturn(Optional.of(userModel));
+
+		assertThrows(DisabledException.class, () -> {
+			authenticationServiceUnderTest.login(authenticationDTO);
+		});
+
+		verifyNoInteractions(tokenService);
+	}
+
+	@Test
+	void testValidateToken_ExpiredToken() {
+		TokenService tokenServiceUnderTest = new TokenService() {
+			@Override
+			protected Instant getExpirationDate() {
+				return Instant.now().minusSeconds(10);
+			}
+		};
+		tokenServiceUnderTest.secret = "testsecret";
+
+		String token = tokenServiceUnderTest.generateToken(userModel);
+
+		String username = tokenServiceUnderTest.validateToken(token);
+
+		assertEquals("", username);
+	}
+	
+	
 
 }

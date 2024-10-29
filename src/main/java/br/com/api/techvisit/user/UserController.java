@@ -40,7 +40,7 @@ public class UserController {
 	public void delete(@RequestBody List<Long> ids) {
 		this.userService.delete(ids);
 	}
-	
+
 	@PutMapping("/update-password")
 	public UserDTO updatePassword(@RequestBody AuthenticationDTO loginInfo) {
 		return this.userService.updatePassword(loginInfo);

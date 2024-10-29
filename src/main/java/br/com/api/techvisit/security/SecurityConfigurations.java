@@ -49,7 +49,6 @@ public class SecurityConfigurations {
 						.requestMatchers(HttpMethod.GET, "/my-visits").hasRole(UserRole.TECHNICIAN.getRole())
 						.requestMatchers(HttpMethod.PUT, "/my-visits/update").hasRole(UserRole.TECHNICIAN.getRole())
                         .requestMatchers("/user", "/user/**").hasRole(UserRole.ADMIN.getRole())
-                        .requestMatchers("/visit-schedule/my-visits", "/visit-schedule/my-visits/**").hasRole(UserRole.TECHNICIAN.getRole())
 						.anyRequest().authenticated()
 				)
 				.exceptionHandling(exceptionHandling -> exceptionHandling

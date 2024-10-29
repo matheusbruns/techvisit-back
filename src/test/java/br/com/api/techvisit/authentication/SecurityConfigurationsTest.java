@@ -1,0 +1,83 @@
+package br.com.api.techvisit.authentication;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class SecurityConfigurationsTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@Autowired
+	private AuthenticationService authenticationService;
+
+	@Test
+	@DisplayName("Deve permitir login sem autenticação")
+	void shouldAllowLogin() throws Exception {
+		mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"login\":\"user\",\"password\":\"password\"}")).andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("Deve negar acesso a endpoint protegido sem autenticação")
+	void shouldDenyAccessWithoutAuthentication() throws Exception {
+		mockMvc.perform(get("/user/get-all")).andExpect(status().isForbidden());
+	}
+
+	@Test
+	@DisplayName("Deve permitir acesso a ADMIN em /user/get-all")
+	@WithMockUser(username = "admin", roles = { "ADMIN" })
+	void shouldAllowAdminAccessToUserGetAll() throws Exception {
+		mockMvc.perform(get("/user/get-all")).andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("Deve negar acesso a USER em /user/get-all")
+	@WithMockUser(username = "user", roles = { "USER" })
+	void shouldDenyUserAccessToUserGetAll() throws Exception {
+		mockMvc.perform(get("/user/get-all")).andExpect(status().isForbidden());
+	}
+
+	@Test
+	@DisplayName("Deve negar acesso a USER em /my-visits")
+	@WithMockUser(username = "user", roles = { "USER" })
+	void shouldDenyUserAccessToMyVisits() throws Exception {
+		mockMvc.perform(get("/my-visits")).andExpect(status().isForbidden());
+	}
+
+	@Test
+	@DisplayName("Deve permitir ADMIN registrar usuários")
+	@WithMockUser(username = "admin", roles = { "ADMIN" })
+	void shouldAllowAdminToRegisterUsers() throws Exception {
+		Mockito.when(authenticationService.register(Mockito.any()))
+			.thenReturn(ResponseEntity.ok().build());
+
+		mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(
+				"{\"login\":\"newuser\",\"password\":\"password\",\"role\":\"USER\",\"organization\":null,\"active\":true}"))
+				.andDo(print()).andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("Deve negar USER registrar usuários")
+	@WithMockUser(username = "user", roles = { "USER" })
+	void shouldDenyUserToRegisterUsers() throws Exception {
+		mockMvc.perform(post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(
+				"{\"login\":\"newuser\",\"password\":\"password\",\"role\":\"USER\",\"organization\":null,\"active\":true}"))
+				.andExpect(status().isForbidden());
+	}
+}

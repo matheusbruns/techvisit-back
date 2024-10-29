@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,9 +21,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import br.com.api.techvisit.customer.definition.CustomerDTO;
 import br.com.api.techvisit.customer.definition.CustomerModel;
+import br.com.api.techvisit.customer.exception.CannotDeleteCustomerException;
 import br.com.api.techvisit.customer.factory.CustomerFactory;
 import br.com.api.techvisit.organization.OrganizationService;
 import br.com.api.techvisit.organization.definition.OrganizationModel;
@@ -165,6 +168,21 @@ class CustomerTest {
 		assertNotNull(result);
 		assertEquals(customerDTO.getId(), result.getId());
 		assertEquals(customerDTO.getFirstName(), result.getFirstName());
+	}
+
+	@Test
+	void testServiceDeleteCustomers_CannotDeleteCustomerException() {
+		List<Long> ids = Arrays.asList(1L, 2L);
+
+		doThrow(new DataIntegrityViolationException("Constraint violation")).when(customerRepository)
+				.deleteAllByIdInBatch(ids);
+
+		CannotDeleteCustomerException exception = assertThrows(CannotDeleteCustomerException.class,
+				() -> customerServiceUnderTest.delete(ids));
+
+		assertEquals("Existem dados vinculados. Não é possível excluir os clientes.", exception.getMessage());
+
+		verify(customerRepository, times(1)).deleteAllByIdInBatch(ids);
 	}
 
 }

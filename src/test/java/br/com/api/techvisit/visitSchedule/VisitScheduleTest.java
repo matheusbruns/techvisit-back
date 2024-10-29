@@ -65,8 +65,10 @@ class VisitScheduleTest {
 	void testGetAll() {
 		when(visitScheduleRepository.findAllByOrganizationId(1L)).thenReturn(List.of(visitScheduleModel));
 		List<VisitScheduleDTO> result = visitScheduleService.getAll(1L);
+
 		assertNotNull(result);
 		assertEquals(1, result.size());
+		verify(visitScheduleRepository, times(1)).findAllByOrganizationId(1L);
 	}
 
 	@Test
@@ -85,8 +87,12 @@ class VisitScheduleTest {
 
 	@Test
 	void testSaveThrowsOrganizationNotFoundException() {
-		when(organizationService.getOrganizationById(1L)).thenReturn(Optional.empty());
 		assertThrows(OrganizationNotFoundException.class, () -> visitScheduleService.save(visitScheduleDTO));
+
+		verify(organizationService, times(1)).getOrganizationById(1L);
+		verifyNoInteractions(customerService);
+		verifyNoInteractions(technicianService);
+		verifyNoInteractions(visitScheduleRepository);
 	}
 
 	@Test
@@ -95,6 +101,11 @@ class VisitScheduleTest {
 		when(customerService.getCustomerById(1L)).thenReturn(Optional.empty());
 
 		assertThrows(CustomerNotFoundException.class, () -> visitScheduleService.save(visitScheduleDTO));
+
+		verify(organizationService, times(1)).getOrganizationById(1L);
+		verify(customerService, times(1)).getCustomerById(1L);
+		verifyNoInteractions(technicianService);
+		verifyNoInteractions(visitScheduleRepository);
 	}
 
 	@Test
@@ -108,18 +119,27 @@ class VisitScheduleTest {
 
 	@Test
 	void testEditStatusSuccess() {
-		when(visitScheduleRepository.findById(1L)).thenReturn(Optional.of(visitScheduleModel));
-		when(visitScheduleRepository.save(any(VisitScheduleModel.class))).thenReturn(visitScheduleModel);
+		when(organizationService.getOrganizationById(1L)).thenReturn(Optional.of(organizationModel));
+		when(customerService.getCustomerById(1L)).thenReturn(Optional.of(customerModel));
+		when(technicianService.getTechnicianById(1L)).thenReturn(Optional.empty());
 
-		VisitScheduleDTO updatedDTO = visitScheduleService.editStatus(1L, VisitStatus.ATTENDED);
-		assertEquals(VisitStatus.ATTENDED, updatedDTO.getStatus());
+		assertThrows(TechnicianNotFoundException.class, () -> visitScheduleService.save(visitScheduleDTO));
+
+		verify(organizationService, times(1)).getOrganizationById(1L);
+		verify(customerService, times(1)).getCustomerById(1L);
+		verify(technicianService, times(1)).getTechnicianById(1L);
+		verifyNoInteractions(visitScheduleRepository);
 	}
 
 	@Test
 	void testEditStatusThrowsVisitScheduleNotFoundException() {
 		when(visitScheduleRepository.findById(1L)).thenReturn(Optional.empty());
+
 		assertThrows(VisitScheduleNotFoundException.class,
 				() -> visitScheduleService.editStatus(1L, VisitStatus.ATTENDED));
+
+		verify(visitScheduleRepository, times(1)).findById(1L);
+		verify(visitScheduleRepository, times(0)).save(any(VisitScheduleModel.class));
 	}
 
 	@Test
@@ -127,8 +147,10 @@ class VisitScheduleTest {
 		when(visitScheduleRepository.findAllByOrganizationIdAndUserId(1L, 1L)).thenReturn(List.of(visitScheduleModel));
 
 		List<VisitScheduleDTO> result = visitScheduleService.getAllByUserId(1L, 1L);
+
 		assertNotNull(result);
-		assertEquals(1L, result.size());
+		assertEquals(1, result.size());
+		verify(visitScheduleRepository, times(1)).findAllByOrganizationIdAndUserId(1L, 1L);
 	}
 
 	@Test

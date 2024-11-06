@@ -21,7 +21,7 @@ import br.com.api.techvisit.user.exception.LoginAlreadyExistsException;
 @RequestMapping("/technician")
 public class TechnicianController {
 
-	private final TechnicianService technicianService;
+	protected final TechnicianService technicianService;
 
 	public TechnicianController(TechnicianService technicianService) {
 		this.technicianService = technicianService;

@@ -40,6 +40,9 @@ class TechnicianTest {
 	@InjectMocks
 	private TechnicianService technicianService;
 
+	@InjectMocks
+	private TechnicianController technicianController;
+
 	@Mock
 	private TechnicianRepository technicianRepository;
 

@@ -12,6 +12,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +33,13 @@ import br.com.api.techvisit.user.definition.UserModel;
 import br.com.api.techvisit.user.definition.UserRole;
 import br.com.api.techvisit.user.exception.LoginAlreadyExistsException;
 import br.com.api.techvisit.user.exception.UserNotFoundException;
+import br.com.api.techvisit.user.factory.UserFactory;
 
 class UserTest {
 
 	private UserRepository userRepository;
 	private OrganizationService organizationService;
+	private UserFactory userFactory;
 
 	@InjectMocks
 	private UserService userService;
@@ -50,6 +53,7 @@ class UserTest {
 		userRepository = mock(UserRepository.class);
 		organizationService = mock(OrganizationService.class);
 		userService = new UserService(userRepository, organizationService);
+		userFactory = new UserFactory();
 	}
 
 	@Test
@@ -166,6 +170,79 @@ class UserTest {
 		UserController controller = new UserController(mockService);
 
 		assertEquals(mockService, controller.userService);
+	}
+
+	@Test
+	void testBuildUserDTO() {
+		OrganizationModel organization = mock(OrganizationModel.class);
+		UserModel userModel = new UserModel();
+		userModel.setId(1L);
+		userModel.setLogin("testUser");
+		userModel.setRole(UserRole.ADMIN);
+		userModel.setOrganization(organization);
+		userModel.setCreationDate(LocalDate.now());
+		userModel.setActive(true);
+
+		UserDTO userDTO = userFactory.build(userModel);
+
+		assertEquals(userModel.getId(), userDTO.getId());
+		assertEquals(userModel.getLogin(), userDTO.getLogin());
+		assertEquals(userModel.getRole(), userDTO.getRole());
+		assertEquals(userModel.isActive(), userDTO.isActive());
+		assertEquals(userModel.getCreationDate(), userDTO.getCreationDate());
+	}
+
+	@Test
+	void testBuildUserDTOList() {
+		OrganizationModel organization = mock(OrganizationModel.class);
+		UserModel user1 = new UserModel();
+		user1.setId(1L);
+		user1.setLogin("user1");
+		user1.setRole(UserRole.ADMIN);
+		user1.setOrganization(organization);
+		user1.setCreationDate(LocalDate.now());
+		user1.setActive(true);
+
+		UserModel user2 = new UserModel();
+		user2.setId(2L);
+		user2.setLogin("user2");
+		user2.setRole(UserRole.TECHNICIAN);
+		user2.setOrganization(organization);
+		user2.setCreationDate(LocalDate.now());
+		user2.setActive(false);
+
+		List<UserModel> userModels = Arrays.asList(user1, user2);
+
+		List<UserDTO> userDTOs = userFactory.build(userModels);
+
+		assertEquals(2, userDTOs.size());
+		assertEquals(user1.getId(), userDTOs.get(0).getId());
+		assertEquals(user2.getId(), userDTOs.get(1).getId());
+	}
+
+	@Test
+	void testBuildUpdateUserModel() {
+		OrganizationModel organization = mock(OrganizationModel.class);
+		UserDTO userDTO = new UserDTO();
+		userDTO.setId(1L);
+		userDTO.setLogin("updatedUser");
+		userDTO.setRole(UserRole.USER);
+		userDTO.setActive(false);
+
+		UserModel userModel = new UserModel();
+		userModel.setId(1L);
+		userModel.setLogin("originalUser");
+		userModel.setRole(UserRole.ADMIN);
+		userModel.setActive(true);
+		userModel.setOrganization(mock(OrganizationModel.class));
+
+		UserModel updatedUserModel = userFactory.buildUpdate(userModel, userDTO, organization);
+
+		assertEquals(userDTO.getId(), updatedUserModel.getId());
+		assertEquals(userDTO.getLogin(), updatedUserModel.getLogin());
+		assertEquals(userDTO.getRole(), updatedUserModel.getRole());
+		assertEquals(userDTO.isActive(), updatedUserModel.isActive());
+		assertEquals(organization, updatedUserModel.getOrganization());
 	}
 
 }

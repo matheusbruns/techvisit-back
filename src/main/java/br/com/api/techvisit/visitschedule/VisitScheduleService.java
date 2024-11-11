@@ -23,7 +23,7 @@ import br.com.api.techvisit.visitschedule.factory.VisitScheduleFactory;
 public class VisitScheduleService {
 
 	private final VisitScheduleRepository visitScheduleRepository;
-
+	
 	private final CustomerService customerService;
 
 	private final TechnicianService technicianService;
